@@ -10,10 +10,8 @@ using Zad_1.Models;
 
 namespace Zad_1.Services
 {
-    internal class SystemManager
+    internal class SystemConfigurer
     {
-        private ProcessingSystem _processingSystem;
-
         private XmlLoader _loader;
         private XmlDocument _doc;
 
@@ -35,10 +33,9 @@ namespace Zad_1.Services
         }
 
 
-        public SystemManager()
+        public SystemConfigurer()
         {
             _loader = new XmlLoader();
-            _processingSystem = new ProcessingSystem();
         }
 
 		public void Initialize(string path)
@@ -57,7 +54,7 @@ namespace Zad_1.Services
             this.maxQueueSize = int.Parse(queueSizeNode.InnerText);
         }
 
-        public List<Job> LoadJobsData()
+        public List<Job> LoadJobs()
         {
             List<Job> jobs = new List<Job>();
 

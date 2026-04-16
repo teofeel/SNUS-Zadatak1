@@ -13,13 +13,13 @@ namespace Zad_1
     {
         static void Main(string[] args)
         {
-            SystemManager manager = new SystemManager();
+            SystemConfigurer configurer = new SystemConfigurer();
 
-            manager.Initialize("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
+            configurer.Initialize("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
 
-            ProcessingSystem system = new ProcessingSystem(manager.WorkerCount, manager.MaxQueueSize);
+            ProcessingSystem system = new ProcessingSystem(configurer.WorkerCount, configurer.MaxQueueSize);
 
-            List<Job> jobs = manager.LoadJobsData();
+            List<Job> jobs = configurer.LoadJobs();
 
             foreach(Job job in jobs)
             {
