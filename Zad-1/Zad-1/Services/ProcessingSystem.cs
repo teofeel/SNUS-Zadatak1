@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zad_1.Enums;
 using Zad_1.Models;
+using Zad_1.Services.Interfaces;
 
 namespace Zad_1.Services
 {
     internal class ProcessingSystem
     {
-        private PriorityQueue<(Job job, TaskCompletionSource<int> tsc), int> _queue = new();
+        private PriorityQueue<IJobCommand, int> _queue = new();
         private HashSet<Guid> _processedIds = new(); 
         private readonly object _lock = new object();
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
@@ -60,7 +62,13 @@ namespace Zad_1.Services
 
                 var tsc = new TaskCompletionSource<int>();
 
-                this._queue.Enqueue((job, tsc), job.Priority);
+                IJobCommand command;
+                if (job.Type.Equals(JobType.Prime)) command = new PrimeCommand(job, tsc);
+                else command = new IOCommand(job, tsc);
+
+
+
+                this._queue.Enqueue(command, job.Priority);
                 this._processedIds.Add(job.Id);
 
                 this._signal.Release();
@@ -75,32 +83,27 @@ namespace Zad_1.Services
             {
                 this._signal.Wait();
 
-                (Job job, TaskCompletionSource<int> tsc) item;
+                IJobCommand job;
 
                 lock (_lock)
                 {
-                    if (!this._queue.TryDequeue(out item, out _)) continue;
+                    if (!this._queue.TryDequeue(out job, out _)) continue;
                 }
 
                 // call method to process this job, and put result back in TaskCompletionSource
-
+               _ = Process(job);
             }
         }
-        private async Task Process(Job job, TaskCompletionSource tsc) 
+        private async Task Process(IJobCommand job) 
         {
-            // to do
+            try
+            {
+                await Task.Run(() => job.execute());
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
-        private async Task<int> ProcessPrime()
-        {
-            // to do
-            return -1;
-        }
-
-        private async Task<int> ProcessIO()
-        {
-            // to do
-            return -1;
-        }
     }
 }

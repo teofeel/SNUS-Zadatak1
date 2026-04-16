@@ -50,5 +50,38 @@ namespace Zad_1.Models
 			this.priority = priority;
 		}
 
-	}
+		public int GetDelay()
+		{
+			if (payload == null || type.Equals(JobType.IO))
+				return -1;
+
+			string timeStr = this.payload.Split(':')[1];
+
+			return int.Parse(timeStr.Replace("_", ""));
+		}
+
+
+		public int GetNumbers()
+		{
+            if (payload == null || type.Equals(JobType.Prime))
+                return -1;
+
+			string numbersStr = this.payload.Split(",")[0];
+			string numberStr = numbersStr.Split(':')[1];
+
+            return int.Parse(numberStr.Replace("_", ""));
+        }
+
+        public int GetThreads()
+        {
+            if (payload == null || type.Equals(JobType.Prime))
+                return -1;
+
+            string threadsStr = this.payload.Split(",")[1];
+            string threadStr = threadsStr.Split(':')[1];
+            int num = int.Parse(threadStr);
+
+			return num;
+        }
+    }
 }
