@@ -47,7 +47,7 @@ namespace Zad_1.Data
 
         public Job CreateIOJob()
         {
-            int delay = _rand.Next(1001, 50001);
+            int delay = _rand.Next(1001, 15001);
             string payload = $"delay:{delay}";
 
             int priority = _rand.Next(1, 11);

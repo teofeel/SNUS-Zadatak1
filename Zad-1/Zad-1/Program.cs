@@ -39,7 +39,7 @@ namespace Zad_1
 
                 system.JobFailed += async (sender, handle) =>
                 {
-                    string status = "FAILED";
+                    string status = "FAIL";
                     try
                     {
                         await handle.Result; 

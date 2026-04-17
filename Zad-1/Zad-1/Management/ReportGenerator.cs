@@ -53,7 +53,6 @@ namespace Zad_1.Management
                 var failedByType = records
                     .Where(r => !r.Success)
                     .GroupBy(r => r.Type)
-                    .OrderBy(g => g.Key)
                     .Select(g => new { Type = g.Key, Count = g.Count() });
 
 
