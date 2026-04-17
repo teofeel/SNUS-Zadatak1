@@ -133,15 +133,18 @@ namespace Zad_1.Services
                     }
                     else
                     {
-                        if (retries < 3) continue;
-
                         throw new TimeoutException($"Job {job.Job.Id} failed to complete");
                     }
                     
                 }
                 catch (Exception ex)
                 {
-                    if (retries >= 3)
+                    if(retries < 3)
+                    {
+                        HandleFailure(job, stopwatch);
+                        continue;
+                    }
+                    else if (retries >= 3)
                     {
                         HandleFailure(job, stopwatch);
                         job.TSC.TrySetException(ex);

@@ -1,13 +1,13 @@
-<Report GeneratedAt="17.04.2026. 18:08:18">
+<Report GeneratedAt="17.04.2026. 23:05:20">
   <CompletedByType>
-    <Entry Type="Prime" Count="47" />
-    <Entry Type="IO" Count="3" />
+    <Entry Type="Prime" Count="50" />
+    <Entry Type="IO" Count="2" />
   </CompletedByType>
   <AvgExecutionTimeByType>
-    <Entry Type="Prime" AvgMs="3,00" />
-    <Entry Type="IO" AvgMs="6085,44" />
+    <Entry Type="Prime" AvgMs="2,59" />
+    <Entry Type="IO" AvgMs="2360,93" />
   </AvgExecutionTimeByType>
   <FailedByType>
-    <Entry Type="IO" Count="30" />
+    <Entry Type="IO" Count="101" />
   </FailedByType>
 </Report>
