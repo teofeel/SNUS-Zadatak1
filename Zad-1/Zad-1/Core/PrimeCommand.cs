@@ -16,43 +16,25 @@ namespace Zad_1.Services
 
         public override void execute()
         {
+            int num = 0;
             object _lock = new object();
             List<Thread> threads = new List<Thread>();
+            int total = this.job.GetNumbers();
 
-            HashSet<int> primes = new HashSet<int>();
-            int threadNum = Math.Clamp(this.job.GetThreads(), 1, 8);
+            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = Math.Clamp(this.job.GetThreads(), 1, 8) };
 
-            int totalNumbers = this.job.GetNumbers();
-            int range = totalNumbers / threadNum;
-
-            for (int i = 0; i < threadNum; i++)
+            Parallel.For(0, total, options, i =>
             {
-                int start = i * range;
-                int end = (i == threadNum - 1) ? totalNumbers : (i + 1) * range;
-
-                Thread t = new Thread(() => { 
-                    for(int i = start; i < end; i++)
+                if (this.IsPrime(i))
+                {
+                    lock (_lock)
                     {
-                        if (this.IsPrime(i))
-                        {
-                            lock (_lock)
-                            {
-                                primes.Add(i);
-                            }
-                        }
+                        num++;
                     }
-                });
+                }
+            });
 
-                threads.Add(t);
-                t.Start();
-            }
-
-            foreach (var t in threads)
-            {
-                t.Join();
-            }
-
-            this.tsc.TrySetResult(primes.Count);
+            this.tsc.TrySetResult(num);
         }
 
         private bool IsPrime(int n)

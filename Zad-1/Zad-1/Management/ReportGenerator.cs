@@ -2,17 +2,40 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Zad_1.Enums;
 using Zad_1.Models;
+using Zad_1.Services;
 
 namespace Zad_1.Management
 {
     internal class ReportGenerator
     {
         private static int _reportIndex = 0;
+        
+        public void GenerateReportsAsync(ProcessingSystem system)
+        {
+            object _lock = new object();
+            List<JobRecord> history = new List<JobRecord>();
+
+            _ = Task.Run(async () => {
+                while (true)
+                {
+                    await Task.Delay(60000);
+
+                    lock (_lock)
+                    {
+                        history = system.RecordsSnapshot;
+
+                        if (history.Any())
+                            GenerateJobReport(history);
+                    }
+                }
+            });
+        }
 
         public void GenerateJobReport(List<JobRecord> records)
         {

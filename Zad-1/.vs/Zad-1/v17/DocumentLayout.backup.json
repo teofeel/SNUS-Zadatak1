@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\core\\processingsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\core\\processingsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\core\\primecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\core\\primecommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\core\\iocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\core\\iocommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\management\\reportgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\management\\reportgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|c:\\users\\teodo\\documents\\ftn\\snus\\zad1\\snus-zadatak1\\zad-1\\zad-1\\data\\jobproducer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A50E6BC8-BF67-43F0-9613-0EE8BB31FEDE}|Zad-1\\Zad-1.csproj|solutionrelative:zad-1\\data\\jobproducer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,8 +22,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 10,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ReportGenerator.cs",
+              "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Management\\ReportGenerator.cs",
+              "RelativeDocumentMoniker": "Zad-1\\Management\\ReportGenerator.cs",
+              "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Management\\ReportGenerator.cs",
+              "RelativeToolTip": "Zad-1\\Management\\ReportGenerator.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwCYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T16:05:20.959Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -67,53 +76,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ProcessingSystem.cs",
-              "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\ProcessingSystem.cs",
-              "RelativeDocumentMoniker": "Zad-1\\Core\\ProcessingSystem.cs",
-              "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\ProcessingSystem.cs",
-              "RelativeToolTip": "Zad-1\\Core\\ProcessingSystem.cs",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAYwKAAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-17T13:47:30.166Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PrimeCommand.cs",
-              "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\PrimeCommand.cs",
-              "RelativeDocumentMoniker": "Zad-1\\Core\\PrimeCommand.cs",
-              "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\PrimeCommand.cs",
-              "RelativeToolTip": "Zad-1\\Core\\PrimeCommand.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAwwDwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-17T13:47:24.165Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IOCommand.cs",
-              "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\IOCommand.cs",
-              "RelativeDocumentMoniker": "Zad-1\\Core\\IOCommand.cs",
-              "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Core\\IOCommand.cs",
-              "RelativeToolTip": "Zad-1\\Core\\IOCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-17T13:47:21.761Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Program.cs",
               "RelativeDocumentMoniker": "Zad-1\\Program.cs",
               "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Program.cs",
               "RelativeToolTip": "Zad-1\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAADEAAAAAAAAAAAAIwDUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-16T18:16:43.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "JobProducer.cs",
+              "DocumentMoniker": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Data\\JobProducer.cs",
+              "RelativeDocumentMoniker": "Zad-1\\Data\\JobProducer.cs",
+              "ToolTip": "C:\\Users\\teodo\\Documents\\FTN\\SNUS\\Zad1\\SNUS-Zadatak1\\Zad-1\\Zad-1\\Data\\JobProducer.cs",
+              "RelativeToolTip": "Zad-1\\Data\\JobProducer.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAABUAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-17T16:02:12.509Z",
               "EditorCaption": ""
             }
           ]

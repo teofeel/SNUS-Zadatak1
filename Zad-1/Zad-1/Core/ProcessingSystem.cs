@@ -55,7 +55,7 @@ namespace Zad_1.Services
 
             for (int i = 0; i < workerCount; i++)
             {
-                _ = Task.Run(() => WorkerLoop());
+                _ = Task.Run(() => WorkerProcess());
             }
         }
 
@@ -86,7 +86,7 @@ namespace Zad_1.Services
             
         }
 
-        private async void WorkerLoop()
+        private async void WorkerProcess()
         {
             while (true)
             {

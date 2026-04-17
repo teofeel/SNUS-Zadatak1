@@ -30,14 +30,14 @@ namespace Zad_1
                 system.JobCompleted += async (sender, handle) =>
                 {
                     int result = await handle.Result;
-                    string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id} {result}\n";
+                    string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id}, {result}\n";
 
                     await logger.WriteLogAsync(message);
                 };
 
                 system.JobFailed += async (sender, handle) =>
                 {
-                    string message = $"[{DateTime.Now.ToString()}] [ABORT] {handle.Id} N/A\n";
+                    string message = $"[{DateTime.Now.ToString()}] [ABORT] {handle.Id}, N/A\n";
 
                     await logger.WriteLogAsync(message);
                 };
@@ -49,24 +49,12 @@ namespace Zad_1
                     system.Submit(job);
                 }
 
-                List<JobRecord> history = new List<JobRecord>();
+                JobProducer producer = new JobProducer();
+                producer.ProduceAsync(configurer.WorkerCount, system);
+
                 ReportGenerator reporter = new ReportGenerator();
+                reporter.GenerateReportsAsync(system);
 
-                _ = Task.Run(async () => {
-                    while (true)
-                    {
-                        await Task.Delay(60000);
-                        lock (history)
-                        {
-                            history = system.RecordsSnapshot;
-
-                            if (history.Any())
-                            {
-                                reporter.GenerateJobReport(history);
-                            }
-                        }
-                    }
-                });
 
                 Console.WriteLine("Jobs has been sent, to exit press x");
 

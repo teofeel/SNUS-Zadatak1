@@ -50,7 +50,11 @@ namespace Zad_1.Models
 			this.priority = priority;
 		}
 
-		public int GetDelay()
+        public Job()
+        {
+        }
+
+        public int GetDelay()
 		{
 			if (payload == null || type.Equals(JobType.Prime))
 				return -1;
