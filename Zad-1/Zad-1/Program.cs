@@ -58,7 +58,7 @@ namespace Zad_1
                 reporter.GenerateReportsAsync(system, cts.Token);
 
 
-                Console.WriteLine("Jobs has been sent, to exit press x");
+                Console.WriteLine("Jobs has been sent,  press x to exit");
 
                 Cli.Menu(system);
 
