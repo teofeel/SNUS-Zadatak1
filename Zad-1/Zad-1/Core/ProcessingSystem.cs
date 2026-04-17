@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,23 @@ namespace Zad_1.Services
         private PriorityQueue<IJobCommand, int> _queue = new();
         private HashSet<Guid> _processedIds = new(); 
         private readonly object _lock = new object();
+        private readonly object _recordsLock = new object();
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
 
         private List<Thread> _workers = new();
+
+        private List<JobRecord> records = new List<JobRecord>();
+
+        public List<JobRecord> RecordsSnapshot
+        {
+            get {
+                lock (_recordsLock)
+                {
+                    return new List<JobRecord>(records); 
+                }
+            }
+
+        }
 
         private int _workerCount, _maxQueueSize;
 
@@ -90,28 +105,34 @@ namespace Zad_1.Services
                     if (!this._queue.TryDequeue(out job, out _)) continue;
                 }
 
-                // call method to process this job, and put result back in TaskCompletionSource
                _ = Process(job);
             }
         }
         private async Task Process(IJobCommand job) 
         {
             int retries = 0;
+            var stopwatch = Stopwatch.StartNew();
 
-            while( retries < 3)
+            while (retries < 3)
             {
-
                 retries++;
+
                 try
                 {
-                    _ = Task.Run(() =>  job.execute());
+                    var executeTask = Task.Run(() =>  job.execute());
 
                     var timeoutTask = Task.Delay(2000);
-                    var completedTask = await Task.WhenAny(job.TSC.Task, timeoutTask);
+                    var completedTask = await Task.WhenAny(executeTask, timeoutTask);
 
-                    if(completedTask == job.TSC.Task)
+                    if(completedTask == executeTask)
                     {
-                        await job.TSC.Task;
+                        await executeTask;
+                        stopwatch.Stop();
+
+                        lock (_recordsLock)
+                        {
+                            this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, true, stopwatch.Elapsed.TotalMilliseconds));
+                        }
 
                         this.jobCompleted?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
                         return;
@@ -119,6 +140,7 @@ namespace Zad_1.Services
                     else
                     {
                         if (retries < 3) continue;
+
                         throw new TimeoutException($"Job {job.Job.Id} failed to complete");
                     }
                     
@@ -127,12 +149,37 @@ namespace Zad_1.Services
                 {
                     if (retries >= 3)
                     {
+                        stopwatch.Stop();
+
+                        lock (_recordsLock)
+                        {
+                            this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, false, stopwatch.Elapsed.TotalMilliseconds));
+                        }
+
                         job.TSC.TrySetException(ex);
                         this.jobFailed?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
                     }
                 }
                 
             }
+        }
+
+        public IEnumerable<Job> GetTopJobs(int n)
+        {
+           return this._queue
+                .UnorderedItems
+                .OrderBy(x => x.Priority)
+                .Take(n)
+                .Select(x => x.Element.Job)
+                .ToArray();
+        }
+
+        public Job GetJob(Guid id)
+        {
+            return this._queue
+                .UnorderedItems
+                .FirstOrDefault(x => x.Element.Job.Id == id)
+                .Element.Job;
         }
 
     }

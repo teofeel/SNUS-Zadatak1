@@ -16,8 +16,6 @@ namespace Zad_1.Services
 
         public override void execute()
         {
-            Console.WriteLine("IO");
-
             Thread.Sleep(this.job.GetDelay());
 
             Random rnd = new Random();
