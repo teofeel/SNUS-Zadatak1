@@ -40,9 +40,14 @@ namespace Zad_1
                 system.JobFailed += async (sender, handle) =>
                 {
                     string status = "FAILED";
-
-                    if (handle.Result.IsFaulted)
-                        status = "ABORT";
+                    try
+                    {
+                        await handle.Result; 
+                    }
+                    catch
+                    {
+                        status = "ABORT"; 
+                    }
 
                     string message = $"[{DateTime.Now.ToString()}] [{status}] {handle.Id}, N/A\n";
 
