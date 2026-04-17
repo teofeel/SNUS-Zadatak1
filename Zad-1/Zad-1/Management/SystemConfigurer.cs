@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Zad_1.Data;
 using Zad_1.Enums;
 using Zad_1.Models;
 
-namespace Zad_1.Services
+namespace Zad_1.Management
 {
     internal class SystemConfigurer
     {
@@ -40,7 +41,7 @@ namespace Zad_1.Services
 
 		public void Initialize(string path)
 		{
-            this._doc = _loader.Load("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
+            _doc = _loader.Load("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
 
             LoadMetaData();
         }
@@ -50,15 +51,15 @@ namespace Zad_1.Services
             XmlNode countNode = _loader.GetNode(_doc, "//WorkerCount");
             XmlNode queueSizeNode = _loader.GetNode(_doc, "//MaxQueueSize");
 
-            this.workerCount = int.Parse(countNode.InnerText);
-            this.maxQueueSize = int.Parse(queueSizeNode.InnerText);
+            workerCount = int.Parse(countNode.InnerText);
+            maxQueueSize = int.Parse(queueSizeNode.InnerText);
         }
 
         public List<Job> LoadJobs()
         {
             List<Job> jobs = new List<Job>();
 
-            XmlNodeList jobNodes = this._loader.GetNodes(_doc, "//Jobs/Job");
+            XmlNodeList jobNodes = _loader.GetNodes(_doc, "//Jobs/Job");
 
             foreach(XmlNode node in jobNodes)
             {

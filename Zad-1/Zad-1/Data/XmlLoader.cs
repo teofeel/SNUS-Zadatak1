@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Zad_1.Services
+namespace Zad_1.Data
 {
     internal class XmlLoader
     {        

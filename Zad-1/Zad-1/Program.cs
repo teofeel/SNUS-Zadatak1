@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Zad_1.Data;
+using Zad_1.Management;
 using Zad_1.Models;
 using Zad_1.Services;
 
@@ -23,17 +24,16 @@ namespace Zad_1
 
             system.JobCompleted += async (sender, handle) =>
             {
-                Console.WriteLine($"Writing job {handle.Id} to file....");
+                int result = await handle.Result;
+                string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id} {result}\n";
 
-                string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id} {handle.Result.Result}\n";
                 await logger.WriteLogAsync(message);
             };
 
             system.JobFailed += async (sender, handle) =>
             {
-                Console.WriteLine($"Writing job {handle.Id} to file....");
-
                 string message = $"[{DateTime.Now.ToString()}] [ABORT] {handle.Id} N/A\n";
+
                 await logger.WriteLogAsync(message);
             };
 
@@ -43,9 +43,42 @@ namespace Zad_1
                 system.Submit(job);
             }
 
+            List<JobRecord> history = new List<JobRecord>();
+            ReportGenerator reporter = new ReportGenerator();
 
-            Console.WriteLine("Jobs has been sent, to finish press any key");
-            Console.ReadLine();
+            _ = Task.Run(async () => {
+                while (true)
+                {
+                    await Task.Delay(60000);
+                    lock (history)
+                    {
+                        history = system.RecordsSnapshot;
+
+                        if (history.Any())
+                        {
+                            reporter.GenerateJobReport(history);
+                        }
+                    }
+                }
+            });
+
+            Console.WriteLine("Jobs has been sent, to exit press x");
+
+            string choice = "";
+            while (choice != "x")
+            {
+                
+                Console.WriteLine("To see more info: ");
+                Console.WriteLine("1. Get top jobs");
+                Console.WriteLine("2. Get job by id");
+
+                Console.Write(">>> ");
+
+                choice = Console.ReadLine().ToLower();
+
+                // to do
+            }
+            
         }
 
     }
