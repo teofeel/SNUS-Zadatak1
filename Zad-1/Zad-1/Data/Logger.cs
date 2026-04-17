@@ -20,6 +20,18 @@ namespace Zad_1.Data
             {
                 await File.AppendAllTextAsync(this._filepath, message);
             }
+            catch(IOException ex)
+            {
+                Console.WriteLine($"I/O error: {ex.Message}");    
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission denied: {this._filepath}: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
             finally
             {
                 this._fileLock.Release();

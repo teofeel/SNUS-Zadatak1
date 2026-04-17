@@ -41,15 +41,21 @@ namespace Zad_1.Management
 
 		public void Initialize(string path)
 		{
-            _doc = _loader.Load("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
+            _doc = _loader.Load(path);
+
+            if (this._doc == null)
+                throw new FileNotFoundException("Document isnt loaded");
 
             LoadMetaData();
         }
 
         private void LoadMetaData()
         {
-            XmlNode countNode = _loader.GetNode(_doc, "//WorkerCount");
-            XmlNode queueSizeNode = _loader.GetNode(_doc, "//MaxQueueSize");
+            XmlNode? countNode = _loader.GetNode(_doc, "//WorkerCount");
+            XmlNode? queueSizeNode = _loader.GetNode(_doc, "//MaxQueueSize");
+
+            if (countNode == null || queueSizeNode == null)
+                throw new InvalidDataException("Could not load configurer file metada");
 
             workerCount = int.Parse(countNode.InnerText);
             maxQueueSize = int.Parse(queueSizeNode.InnerText);
@@ -61,16 +67,18 @@ namespace Zad_1.Management
 
             XmlNodeList jobNodes = _loader.GetNodes(_doc, "//Jobs/Job");
 
-            foreach(XmlNode node in jobNodes)
+            foreach (XmlNode node in jobNodes)
             {
-                Job job = CreateJob(node);
-                if(job == null)
+                try
                 {
-                    Console.WriteLine("Job couldn't be created, continuing....");
+                    Job job = CreateJob(node);
+                    jobs.Add(job);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Job couldn't be created: {ex.Message}, continuing....");
                     continue;
                 }
-
-                jobs.Add(job);
             }
 
             return jobs;
@@ -81,8 +89,14 @@ namespace Zad_1.Management
         {
             string typeStr = jobNode.Attributes["Type"]?.Value;
             string payload = jobNode.Attributes["Payload"]?.Value;
-            int priority = int.Parse(jobNode.Attributes["Priority"]?.Value ?? "10");
+            string priorityStr = jobNode.Attributes["Priority"]?.Value;
+            
 
+            if (payload == null || payload == "") throw new InvalidDataException("Payload must exist");
+            if (typeStr == null || typeStr == "") throw new InvalidDataException("Type must exist");
+            if (priorityStr == null || priorityStr == "") throw new InvalidDataException("Priority must exist");
+
+            int priority = int.Parse(priorityStr);
 
             if (Enum.TryParse(typeStr, out JobType typeEnum))
             {
@@ -91,7 +105,7 @@ namespace Zad_1.Management
                 return job;
             }
             else
-                return null;
+                throw new InvalidDataException("Job couldn'tbe created");
         }
 	}
 }

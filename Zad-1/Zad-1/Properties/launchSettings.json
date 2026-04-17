@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Zad-1": {
+      "commandName": "Project",
+      "commandLineArgs": "C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml"
+    }
+  }
+}

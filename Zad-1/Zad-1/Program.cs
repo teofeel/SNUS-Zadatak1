@@ -15,58 +15,82 @@ namespace Zad_1
     {
         static void Main(string[] args)
         {
-            SystemConfigurer configurer = new SystemConfigurer();
-            Logger logger = new Logger();
-
-            configurer.Initialize("C:/Users/teodo/Documents/FTN/SNUS/Zad1/SystemConfig/SystemConfig.xml");
-
-            ProcessingSystem system = new ProcessingSystem(configurer.WorkerCount, configurer.MaxQueueSize);
-
-            system.JobCompleted += async (sender, handle) =>
+            try
             {
-                int result = await handle.Result;
-                string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id} {result}\n";
+                if (args.Length < 1)
+                    throw new ArgumentNullException("No args provided");
 
-                await logger.WriteLogAsync(message);
-            };
+                SystemConfigurer configurer = new SystemConfigurer();
+                Logger logger = new Logger();
 
-            system.JobFailed += async (sender, handle) =>
-            {
-                string message = $"[{DateTime.Now.ToString()}] [ABORT] {handle.Id} N/A\n";
+                configurer.Initialize(args[0]);
 
-                await logger.WriteLogAsync(message);
-            };
+                ProcessingSystem system = new ProcessingSystem(configurer.WorkerCount, configurer.MaxQueueSize);
 
-            List<Job> jobs = configurer.LoadJobs();
-
-            foreach(Job job in jobs)
-            {
-                system.Submit(job);
-            }
-
-            List<JobRecord> history = new List<JobRecord>();
-            ReportGenerator reporter = new ReportGenerator();
-
-            _ = Task.Run(async () => {
-                while (true)
+                system.JobCompleted += async (sender, handle) =>
                 {
-                    await Task.Delay(60000);
-                    lock (history)
-                    {
-                        history = system.RecordsSnapshot;
+                    int result = await handle.Result;
+                    string message = $"[{DateTime.Now.ToString()}] [SUCCESS] {handle.Id} {result}\n";
 
-                        if (history.Any())
+                    await logger.WriteLogAsync(message);
+                };
+
+                system.JobFailed += async (sender, handle) =>
+                {
+                    string message = $"[{DateTime.Now.ToString()}] [ABORT] {handle.Id} N/A\n";
+
+                    await logger.WriteLogAsync(message);
+                };
+
+                List<Job> jobs = configurer.LoadJobs();
+
+                foreach (Job job in jobs)
+                {
+                    system.Submit(job);
+                }
+
+                List<JobRecord> history = new List<JobRecord>();
+                ReportGenerator reporter = new ReportGenerator();
+
+                _ = Task.Run(async () => {
+                    while (true)
+                    {
+                        await Task.Delay(60000);
+                        lock (history)
                         {
-                            reporter.GenerateJobReport(history);
+                            history = system.RecordsSnapshot;
+
+                            if (history.Any())
+                            {
+                                reporter.GenerateJobReport(history);
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            Console.WriteLine("Jobs has been sent, to exit press x");
+                Console.WriteLine("Jobs has been sent, to exit press x");
 
-            Cli.Menu(system);
-            
+                Cli.Menu(system);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Make sure to send path to xml file");
+            }
+            catch(FileNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Make sure that path is valid");
+            }
+            catch(InvalidDataException ex)
+            {
+                Console.WriteLine("Data that must exist doesn't");
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
     }

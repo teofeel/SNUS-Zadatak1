@@ -56,11 +56,6 @@ namespace Zad_1.Services
             for (int i = 0; i < workerCount; i++)
             {
                 _ = Task.Run(() => WorkerLoop());
-
-                /*Thread t = new Thread(WorkerLoop) { IsBackground = true };
-                this._workers.Add(t);
-
-                t.Start();*/
             }
         }
 
@@ -95,22 +90,29 @@ namespace Zad_1.Services
         {
             while (true)
             {
-                await this._signal.WaitAsync();
-
-                IJobCommand job;
-
-                lock (_lock)
+                try
                 {
-                    if (!this._queue.TryDequeue(out job, out _)) continue;
-                }
+                    await this._signal.WaitAsync();
 
-               await Process(job);
+                    IJobCommand job;
+
+                    lock (_lock)
+                    {
+                        if (!this._queue.TryDequeue(out job, out _)) continue;
+                    }
+
+                    await Process(job);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Worker error: {ex.Message}");
+                }
             }
         }
         private async Task Process(IJobCommand job) 
         {
             int retries = 0;
-            Stopwatch? stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
             while (retries < 3)
             {
@@ -124,7 +126,9 @@ namespace Zad_1.Services
 
                     if(completedTask == executeTask)
                     {
-                        ExecuteTask(job, executeTask, stopwatch);
+                        await executeTask;
+                        HandleCompleted(job, stopwatch);
+
                         return;
                     }
                     else
@@ -147,9 +151,8 @@ namespace Zad_1.Services
             }
         }
 
-        private async void ExecuteTask(IJobCommand job, Task? executeTask, Stopwatch? stopwatch)
+        private void HandleCompleted(IJobCommand job, Stopwatch stopwatch)
         {
-            await executeTask;
             stopwatch.Stop();
 
             lock (_recordsLock)
@@ -160,7 +163,7 @@ namespace Zad_1.Services
             this.jobCompleted?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
         }
 
-        private async void HandleFailure(IJobCommand job, Stopwatch? stopwatch)
+        private void HandleFailure(IJobCommand job, Stopwatch stopwatch)
         {
             stopwatch.Stop();
 

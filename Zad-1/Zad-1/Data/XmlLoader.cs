@@ -9,26 +9,36 @@ namespace Zad_1.Data
 {
     internal class XmlLoader
     {        
-        public XmlDocument Load(string path) { 
+        public XmlDocument Load(string path) {
+            XmlDocument? doc = null;
+
             try
             {
-                XmlDocument doc = new XmlDocument();
+                doc = new XmlDocument();
                 doc.Load(path);
-
-                return doc;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"I/O error: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission denied: {path}: {ex.Message}");
             }
             catch (Exception ex)
             {
-                return null;
+                Console.WriteLine($"Error: {ex.Message}");
             }
+            
+            return doc;
         }
 
-        public XmlNode GetNode(XmlDocument doc, string name)
+        public XmlNode? GetNode(XmlDocument doc, string name)
         {
             return doc?.SelectSingleNode(name);
         }
 
-        public XmlNodeList GetNodes(XmlDocument doc, string name)
+        public XmlNodeList? GetNodes(XmlDocument doc, string name)
         {
             return doc?.SelectNodes(name);
         }

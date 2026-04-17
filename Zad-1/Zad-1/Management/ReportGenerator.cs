@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,66 +16,81 @@ namespace Zad_1.Management
 
         public void GenerateJobReport(List<JobRecord> records)
         {
-            var countByType = records
+            try
+            {
+                var countByType = records
                 .Where(r => r.Success)
                 .GroupBy(r => r.Type)
                 .Select(g => new { Type = g.Key, Count = g.Count() });
 
-            var averageTime = records
-                .GroupBy(r => r.Type)
-                .Select(g => new { Type = g.Key, Time = g.Average(r => r.ExecutionTime) });
+                var averageTime = records
+                    .GroupBy(r => r.Type)
+                    .Select(g => new { Type = g.Key, Time = g.Average(r => r.ExecutionTime) });
 
-            var failedByType = records
-                .Where(r => !r.Success)
-                .GroupBy(r => r.Type)
-                .OrderBy(g => g.Key)   
-                .Select(g => new { Type = g.Key, Count = g.Count() });
-
-
-            var doc = new XmlDocument();
-            var root = doc.CreateElement("Report");
-            doc.AppendChild(root);
-
-            var timeAttr = doc.CreateAttribute("GeneratedAt");
-            timeAttr.Value = DateTime.Now.ToString();
-            root.Attributes.Append(timeAttr);
+                var failedByType = records
+                    .Where(r => !r.Success)
+                    .GroupBy(r => r.Type)
+                    .OrderBy(g => g.Key)
+                    .Select(g => new { Type = g.Key, Count = g.Count() });
 
 
-            var completedNode = doc.CreateElement("CompletedByType");
-            foreach (var item in countByType)
-            {
-                var node = doc.CreateElement("Entry");
-                node.SetAttribute("Type", item.Type.ToString());
-                node.SetAttribute("Count", item.Count.ToString());
-                completedNode.AppendChild(node);
+                var doc = new XmlDocument();
+                var root = doc.CreateElement("Report");
+                doc.AppendChild(root);
+
+                var timeAttr = doc.CreateAttribute("GeneratedAt");
+                timeAttr.Value = DateTime.Now.ToString();
+                root.Attributes.Append(timeAttr);
+
+
+                var completedNode = doc.CreateElement("CompletedByType");
+                foreach (var item in countByType)
+                {
+                    var node = doc.CreateElement("Entry");
+                    node.SetAttribute("Type", item.Type.ToString());
+                    node.SetAttribute("Count", item.Count.ToString());
+                    completedNode.AppendChild(node);
+                }
+                root.AppendChild(completedNode);
+
+
+                var avgNode = doc.CreateElement("AvgExecutionTimeByType");
+                foreach (var item in averageTime)
+                {
+                    var node = doc.CreateElement("Entry");
+                    node.SetAttribute("Type", item.Type.ToString());
+                    node.SetAttribute("AvgMs", item.Time.ToString("F2"));
+                    avgNode.AppendChild(node);
+                }
+                root.AppendChild(avgNode);
+
+                var failedNode = doc.CreateElement("FailedByType");
+                foreach (var item in failedByType)
+                {
+                    var node = doc.CreateElement("Entry");
+                    node.SetAttribute("Type", item.Type.ToString());
+                    node.SetAttribute("Count", item.Count.ToString());
+                    failedNode.AppendChild(node);
+                }
+                root.AppendChild(failedNode);
+
+                string fileName = $"report_{_reportIndex % 10}.xml";
+                _reportIndex++;
+
+                doc.Save(fileName);
             }
-            root.AppendChild(completedNode);
-
-
-            var avgNode = doc.CreateElement("AvgExecutionTimeByType");
-            foreach (var item in averageTime)
+            catch (IOException ex)
             {
-                var node = doc.CreateElement("Entry");
-                node.SetAttribute("Type", item.Type.ToString());
-                node.SetAttribute("AvgMs", item.Time.ToString("F2"));
-                avgNode.AppendChild(node);
+                Console.WriteLine($"I/O error: {ex.Message}");
             }
-            root.AppendChild(avgNode);
-
-            var failedNode = doc.CreateElement("FailedByType");
-            foreach (var item in failedByType)
+            catch (UnauthorizedAccessException ex)
             {
-                var node = doc.CreateElement("Entry");
-                node.SetAttribute("Type", item.Type.ToString());
-                node.SetAttribute("Count", item.Count.ToString());
-                failedNode.AppendChild(node);
+                Console.WriteLine($"Permission denied: {ex.Message}");
             }
-            root.AppendChild(failedNode);
-
-            string fileName = $"report_{_reportIndex % 10}.xml";
-            _reportIndex++;
-
-            doc.Save(fileName);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
 
     }
