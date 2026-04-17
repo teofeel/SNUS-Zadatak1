@@ -17,9 +17,6 @@ namespace Zad_1.Services
         private readonly object _lock = new object();
         private readonly object _recordsLock = new object();
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0);
-
-        private List<Thread> _workers = new();
-
         private List<JobRecord> records = new List<JobRecord>();
 
         public List<JobRecord> RecordsSnapshot
@@ -113,7 +110,7 @@ namespace Zad_1.Services
         private async Task Process(IJobCommand job) 
         {
             int retries = 0;
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch? stopwatch = Stopwatch.StartNew();
 
             while (retries < 3)
             {
@@ -121,22 +118,13 @@ namespace Zad_1.Services
 
                 try
                 {
-                    var executeTask = Task.Run(() =>  job.execute());
-
-                    var timeoutTask = Task.Delay(2000);
-                    var completedTask = await Task.WhenAny(executeTask, timeoutTask);
+                    Task? executeTask = Task.Run(() =>  job.execute());
+                    Task? timeoutTask = Task.Delay(2000);
+                    Task? completedTask = await Task.WhenAny(executeTask, timeoutTask);
 
                     if(completedTask == executeTask)
                     {
-                        await executeTask;
-                        stopwatch.Stop();
-
-                        lock (_recordsLock)
-                        {
-                            this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, true, stopwatch.Elapsed.TotalMilliseconds));
-                        }
-
-                        this.jobCompleted?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
+                        ExecuteTask(job, executeTask, stopwatch);
                         return;
                     }
                     else
@@ -151,37 +139,62 @@ namespace Zad_1.Services
                 {
                     if (retries >= 3)
                     {
-                        stopwatch.Stop();
-
-                        lock (_recordsLock)
-                        {
-                            this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, false, stopwatch.Elapsed.TotalMilliseconds));
-                        }
-
+                        HandleFailure(job, stopwatch);
                         job.TSC.TrySetException(ex);
-                        this.jobFailed?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
                     }
                 }
                 
             }
         }
 
+        private async void ExecuteTask(IJobCommand job, Task? executeTask, Stopwatch? stopwatch)
+        {
+            await executeTask;
+            stopwatch.Stop();
+
+            lock (_recordsLock)
+            {
+                this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, true, stopwatch.Elapsed.TotalMilliseconds));
+            }
+
+            this.jobCompleted?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
+        }
+
+        private async void HandleFailure(IJobCommand job, Stopwatch? stopwatch)
+        {
+            stopwatch.Stop();
+
+            lock (_recordsLock)
+            {
+                this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, false, stopwatch.Elapsed.TotalMilliseconds));
+            }
+
+            
+            this.jobFailed?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
+        }
+
         public IEnumerable<Job> GetTopJobs(int n)
         {
-           return this._queue
+            lock (this._lock)
+            {
+                return this._queue
                 .UnorderedItems
                 .OrderBy(x => x.Priority)
                 .Take(n)
-                .Select(x => x.Element.Job)
-                .ToArray();
+                .Select(x => x.Element.Job);
+            }
+           
         }
 
         public Job GetJob(Guid id)
         {
-            return this._queue
+            lock (this._lock)
+            {
+                return this._queue
                 .UnorderedItems
                 .FirstOrDefault(x => x.Element.Job.Id == id)
                 .Element.Job;
+            }
         }
 
     }

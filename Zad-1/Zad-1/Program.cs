@@ -38,6 +38,7 @@ namespace Zad_1
             };
 
             List<Job> jobs = configurer.LoadJobs();
+
             foreach(Job job in jobs)
             {
                 system.Submit(job);
@@ -64,20 +65,7 @@ namespace Zad_1
 
             Console.WriteLine("Jobs has been sent, to exit press x");
 
-            string choice = "";
-            while (choice != "x")
-            {
-                
-                Console.WriteLine("To see more info: ");
-                Console.WriteLine("1. Get top jobs");
-                Console.WriteLine("2. Get job by id");
-
-                Console.Write(">>> ");
-
-                choice = Console.ReadLine().ToLower();
-
-                // to do
-            }
+            Cli.Menu(system);
             
         }
 
