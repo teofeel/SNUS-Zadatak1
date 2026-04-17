@@ -52,7 +52,7 @@ namespace Zad_1.Models
 
 		public int GetDelay()
 		{
-			if (payload == null || type.Equals(JobType.IO))
+			if (payload == null || type.Equals(JobType.Prime))
 				return -1;
 
 			string timeStr = this.payload.Split(':')[1];
@@ -63,7 +63,7 @@ namespace Zad_1.Models
 
 		public int GetNumbers()
 		{
-            if (payload == null || type.Equals(JobType.Prime))
+            if (payload == null || type.Equals(JobType.IO))
                 return -1;
 
 			string numbersStr = this.payload.Split(",")[0];
@@ -74,7 +74,7 @@ namespace Zad_1.Models
 
         public int GetThreads()
         {
-            if (payload == null || type.Equals(JobType.Prime))
+            if (payload == null || type.Equals(JobType.IO))
                 return -1;
 
             string threadsStr = this.payload.Split(",")[1];

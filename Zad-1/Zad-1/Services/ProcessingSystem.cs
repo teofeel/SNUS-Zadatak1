@@ -52,6 +52,12 @@ namespace Zad_1.Services
 
         public JobHandle? Submit(Job job)
         {
+            var tsc = new TaskCompletionSource<int>();
+            IJobCommand command;
+
+            if (job.Type.Equals(JobType.Prime)) command = new PrimeCommand(job, tsc);
+            else command = new IOCommand(job, tsc);
+
             lock (_lock)
             {
                 if (this._processedIds.Contains(job.Id))
@@ -60,21 +66,15 @@ namespace Zad_1.Services
                 if (this._queue.Count > this._maxQueueSize)
                     return null;
 
-                var tsc = new TaskCompletionSource<int>();
-
-                IJobCommand command;
-                if (job.Type.Equals(JobType.Prime)) command = new PrimeCommand(job, tsc);
-                else command = new IOCommand(job, tsc);
-
-
 
                 this._queue.Enqueue(command, job.Priority);
                 this._processedIds.Add(job.Id);
-
-                this._signal.Release();
-
-                return new JobHandle(job.Id, tsc.Task);
             }
+
+            this._signal.Release();
+
+            return new JobHandle(job.Id, tsc.Task);
+            
         }
 
         private void WorkerLoop()
@@ -96,12 +96,42 @@ namespace Zad_1.Services
         }
         private async Task Process(IJobCommand job) 
         {
-            try
+            int retries = 0;
+
+            while( retries < 3)
             {
-                await Task.Run(() => job.execute());
-            }
-            catch (Exception ex)
-            {
+
+                retries++;
+                try
+                {
+                    _ = Task.Run(() =>  job.execute());
+
+                    var timeoutTask = Task.Delay(2000);
+                    var completedTask = await Task.WhenAny(job.TSC.Task, timeoutTask);
+
+                    if(completedTask == job.TSC.Task)
+                    {
+                        await job.TSC.Task;
+
+                        this.jobCompleted?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
+                        return;
+                    }
+                    else
+                    {
+                        if (retries < 3) continue;
+                        throw new TimeoutException($"Job {job.Job.Id} failed to complete");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    if (retries >= 3)
+                    {
+                        job.TSC.TrySetException(ex);
+                        this.jobFailed?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
+                    }
+                }
+                
             }
         }
 
