@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Zad-1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1656f4ff82da9543f93cb759dbef08fa4c299dd7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b6190881790626d2b9ad1ee71ad2843e065ca15")]
 [assembly: System.Reflection.AssemblyProductAttribute("Zad-1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Zad-1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -58,10 +58,12 @@ namespace Zad_1.Services
 
             for (int i = 0; i < workerCount; i++)
             {
-                Thread t = new Thread(WorkerLoop) { IsBackground = true };
+                _ = Task.Run(() => WorkerLoop());
+
+                /*Thread t = new Thread(WorkerLoop) { IsBackground = true };
                 this._workers.Add(t);
 
-                t.Start();
+                t.Start();*/
             }
         }
 
@@ -92,11 +94,11 @@ namespace Zad_1.Services
             
         }
 
-        private void WorkerLoop()
+        private async void WorkerLoop()
         {
             while (true)
             {
-                this._signal.Wait();
+                await this._signal.WaitAsync();
 
                 IJobCommand job;
 
@@ -105,7 +107,7 @@ namespace Zad_1.Services
                     if (!this._queue.TryDequeue(out job, out _)) continue;
                 }
 
-               _ = Process(job);
+               await Process(job);
             }
         }
         private async Task Process(IJobCommand job) 
