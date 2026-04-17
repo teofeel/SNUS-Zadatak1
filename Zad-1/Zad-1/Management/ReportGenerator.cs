@@ -15,14 +15,14 @@ namespace Zad_1.Management
     internal class ReportGenerator
     {
         private static int _reportIndex = 0;
-        
-        public void GenerateReportsAsync(ProcessingSystem system)
+        private readonly object _lock = new object(); 
+        public void GenerateReportsAsync(ProcessingSystem system, CancellationToken token)
         {
             object _lock = new object();
             List<JobRecord> history = new List<JobRecord>();
 
             _ = Task.Run(async () => {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(60000);
 
@@ -30,12 +30,12 @@ namespace Zad_1.Management
                     {
                         history = system.RecordsSnapshot;
 
-                        if (history.Any())
-                            GenerateJobReport(history);
+                        if (history.Any()) GenerateJobReport(history);
                     }
                 }
-            });
+            }, token);
         }
+
 
         public void GenerateJobReport(List<JobRecord> records)
         {

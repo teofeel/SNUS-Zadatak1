@@ -13,21 +13,25 @@ namespace Zad_1.Data
     internal class JobProducer
     {
         private static readonly Random _rand = new Random();
+        private CancellationTokenSource _cts;
 
-        public void ProduceAsync(int numThreads, ProcessingSystem system)
+
+        public void ProduceAsync(int numThreads, ProcessingSystem system, CancellationToken token)
         {
             for (int i = 0; i < numThreads; i++)
             {
                 _ = Task.Run(async () =>
                 {
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         system.Submit(Produce());
-                        await Task.Delay(_rand.Next(1000, 5000));
+                        await Task.Delay(_rand.Next(1000, 5000), token);
                     }
-                });
+                }, token);
             }
         }
+
+
         public Job Produce()
         {
             Job job;
@@ -40,6 +44,7 @@ namespace Zad_1.Data
             return job;
         }
 
+
         public Job CreateIOJob()
         {
             int delay = _rand.Next(1001, 50001);
@@ -49,6 +54,7 @@ namespace Zad_1.Data
 
             return new Job(JobType.IO, payload, priority);
         }
+
 
         public Job CreatePrimeJob()
         {

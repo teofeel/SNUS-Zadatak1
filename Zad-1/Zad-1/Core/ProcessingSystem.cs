@@ -86,7 +86,7 @@ namespace Zad_1.Services
             
         }
 
-        private async void WorkerProcess()
+        private async Task WorkerProcess()
         {
             while (true)
             {
@@ -172,7 +172,6 @@ namespace Zad_1.Services
                 this.records.Add(new JobRecord(job.Job.Id, job.Job.Type, false, stopwatch.Elapsed.TotalMilliseconds));
             }
 
-            
             this.jobFailed?.Invoke(this, new JobHandle(job.Job.Id, job.TSC.Task));
         }
 

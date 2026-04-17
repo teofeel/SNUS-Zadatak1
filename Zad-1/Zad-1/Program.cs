@@ -15,6 +15,8 @@ namespace Zad_1
     {
         static void Main(string[] args)
         {
+            CancellationTokenSource cts = new CancellationTokenSource();
+
             try
             {
                 if (args.Length < 1)
@@ -50,27 +52,30 @@ namespace Zad_1
                 }
 
                 JobProducer producer = new JobProducer();
-                producer.ProduceAsync(configurer.WorkerCount, system);
+                producer.ProduceAsync(configurer.WorkerCount, system, cts.Token);
 
                 ReportGenerator reporter = new ReportGenerator();
-                reporter.GenerateReportsAsync(system);
+                reporter.GenerateReportsAsync(system, cts.Token);
 
 
                 Console.WriteLine("Jobs has been sent, to exit press x");
 
                 Cli.Menu(system);
+
+                Console.WriteLine("Shutting down...");
+                cts.Cancel();
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Make sure to send path to xml file");
             }
-            catch(FileNotFoundException ex)
+            catch (FileNotFoundException ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Make sure that path is valid");
             }
-            catch(InvalidDataException ex)
+            catch (InvalidDataException ex)
             {
                 Console.WriteLine("Data that must exist doesn't");
                 Console.WriteLine(ex.Message);
@@ -79,6 +84,11 @@ namespace Zad_1
             {
                 Console.WriteLine(ex.ToString());
             }
+            finally
+            {
+                cts.Dispose();
+            }
+
         }
 
     }
