@@ -16,6 +16,7 @@ namespace Zad_1.Services
 
         public override void execute()
         {
+            Console.WriteLine("Prime");
             object _lock = new object();
             List<Thread> threads = new List<Thread>();
 
@@ -52,7 +53,7 @@ namespace Zad_1.Services
                 t.Join();
             }
 
-            this.tsc.SetResult(primes.Count);
+            this.tsc.TrySetResult(primes.Count);
         }
 
         private bool IsPrime(int n)
