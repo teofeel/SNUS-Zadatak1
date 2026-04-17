@@ -83,5 +83,10 @@ namespace Zad_1.Models
 
 			return num;
         }
+
+		public override string ToString()
+		{
+			return "[ " + this.id + " | " +this.type.ToString() + " | " + this.payload + " | " + this.priority.ToString() + "]";
+		}
     }
 }
