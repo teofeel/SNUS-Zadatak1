@@ -92,5 +92,10 @@ namespace Zad_1.Models
 		{
 			return "[ " + this.id + " | " +this.type.ToString() + " | " + this.payload + " | " + this.priority.ToString() + "]";
 		}
+
+		public Job Clone()
+		{
+			return new Job(this.type, this.payload, this.priority);
+		}
     }
 }

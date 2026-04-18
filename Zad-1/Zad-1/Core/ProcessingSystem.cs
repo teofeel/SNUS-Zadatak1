@@ -186,9 +186,11 @@ namespace Zad_1.Services
                 .UnorderedItems
                 .OrderBy(x => x.Priority)
                 .Take(n)
-                .Select(x => x.Element.Job);
+                .Select(x => x.Element.Job.Clone())
+                .ToList();
             }
            
+
         }
 
         public Job GetJob(Guid id)
@@ -198,9 +200,11 @@ namespace Zad_1.Services
                 return this._queue
                 .UnorderedItems
                 .FirstOrDefault(x => x.Element.Job.Id == id)
-                .Element.Job;
+                .Element.Job.Clone();
             }
         }
+
+
 
     }
 }
